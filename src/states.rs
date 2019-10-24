@@ -11,18 +11,15 @@ pub struct MainState {
     frames: usize,
     pos: Point2<i32>,
     vel: Vector2<i32>,
-    text: graphics::Text,
     player_image: graphics::Image,
 }
 
 impl MainState {
     pub fn new(ctx: &mut Context) -> GameResult<MainState> {
-        let font = graphics::Font::new(ctx, "/DejaVuSerif.ttf")?;
-        let text = graphics::Text::new(("A", font, 48.0));
         let pos = Point2::new(0, 0);
         let vel = Vector2::new(0, 0);
         let player_image = graphics::Image::new(ctx, "/red.png")?;
-        let s = MainState { frames: 0, pos, vel, text, player_image };
+        let s = MainState { frames: 0, pos, vel, player_image };
         Ok(s)
     }
 }
@@ -37,8 +34,6 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let r = ggez::graphics::screen_coordinates(ctx);
         graphics::clear(ctx, [0.1, 0.2, 0.3, 1.0].into());
-        //let dest_point = cgmath::Point2::new(self.pos.x as f32, r.h - self.pos.y as f32);
-        //graphics::draw(ctx, &self.text, (dest_point,))?;
         let player_pos = cgmath::Point2::new((self.pos.x - PLAYER_WIDTH/2) as f32, r.h - (self.pos.y - PLAYER_WIDTH/2) as f32);
         graphics::draw(ctx, &self.player_image, (player_pos,))?;
         graphics::present(ctx)?;
