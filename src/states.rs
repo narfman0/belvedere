@@ -1,6 +1,12 @@
 use cgmath;
 use ggez;
+use nphysics2d;
 
+use ggez::nalgebra::Vector2 as v2;
+use nphysics2d::object::{DefaultBodySet, DefaultColliderSet};
+use nphysics2d::force_generator::DefaultForceGeneratorSet;
+use nphysics2d::joint::DefaultJointConstraintSet;
+use nphysics2d::world::{DefaultMechanicalWorld, DefaultGeometricalWorld};
 use ggez::event::{KeyCode, KeyMods};
 use ggez::{event, graphics, Context, GameResult};
 use cgmath::{Point2, Vector2};
@@ -16,6 +22,12 @@ pub struct MainState {
     right: bool,
     up: bool,
     down: bool,
+    mechanical_world: DefaultMechanicalWorld<f32>,
+    geometrical_world: DefaultGeometricalWorld<f32>,
+    bodies: DefaultBodySet<f32>,
+    colliders: DefaultColliderSet<f32>,
+    joint_constraints: DefaultJointConstraintSet<f32>,
+    force_generators: DefaultForceGeneratorSet<f32>,
 }
 
 impl MainState {
@@ -23,7 +35,17 @@ impl MainState {
         let pos = Point2::new(0.0, 0.0);
         let vel = Vector2::new(0.0, 0.0);
         let player_image = graphics::Image::new(ctx, "/red.png")?;
-        let s = MainState { frames: 0, pos, vel, player_image, up: false, down: false, left: false, right: false };
+
+        let mechanical_world = DefaultMechanicalWorld::new(v2::new(0.0, -9.81));
+        let geometrical_world = DefaultGeometricalWorld::<f32>::new();
+        let bodies = DefaultBodySet::<f32>::new();
+        let colliders = DefaultColliderSet::<f32>::new();
+        let joint_constraints = DefaultJointConstraintSet::<f32>::new();
+        let force_generators = DefaultForceGeneratorSet::<f32>::new();
+
+        let s = MainState { frames: 0, pos, vel, player_image, up: false, down: false, left: false, right: false,
+            mechanical_world, geometrical_world, bodies, colliders, joint_constraints, force_generators
+        };
         Ok(s)
     }
 }
@@ -43,6 +65,15 @@ impl event::EventHandler for MainState {
             self.vel.x += 0.1;
         }
         self.pos += self.vel;
+
+        self.mechanical_world.step(
+            &mut self.geometrical_world,
+            &mut self.bodies,
+            &mut self.colliders,
+            &mut self.joint_constraints,
+            &mut self.force_generators
+        );
+
         self.frames += 1;
         Ok(())
     }
