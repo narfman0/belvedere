@@ -32,7 +32,8 @@ impl event::EventHandler for LevelState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let r = ggez::graphics::screen_coordinates(ctx);
         graphics::clear(ctx, [0.1, 0.2, 0.3, 1.0].into());
-        let player_pos = cgmath::Point2::new(self.world.pos.x - PLAYER_WIDTH as f32/2.0, r.h - self.world.pos.y - PLAYER_WIDTH as f32);
+        let player_pos = cgmath::Point2::new(self.world.player.pos.x - PLAYER_WIDTH as f32/2.0,
+            r.h - self.world.player.pos.y - PLAYER_WIDTH as f32);
         graphics::draw(ctx, &self.player_image, (player_pos,))?;
         graphics::present(ctx)?;
         if (self.frames % 100) == 0 {

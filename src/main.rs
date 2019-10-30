@@ -3,6 +3,7 @@ use ggez;
 use ggez::{event, GameResult};
 use std::{env, path};
 
+mod entity;
 mod states;
 mod world;
 
