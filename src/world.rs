@@ -3,7 +3,7 @@ use cgmath::{Point2, Vector2};
 use crate::entity::Entity;
 
 static IMPULSE_X: f32 = 0.1;
-static JUMP_Y: f32 = 10.0;
+static JUMP_Y: f32 = 5.0;
 
 pub struct World {
     pub player: Entity,
@@ -11,15 +11,18 @@ pub struct World {
     pub right: bool,
     pub up: bool,
     pub down: bool,
-    geometries: Vec<Entity>,
+    pub geometries: Vec<Entity>,
 }
 
 impl World {
     pub fn new() -> World {
         // TODO [levels] level will eventuall declare its length, and define all its geometries
-        let geometries = vec![Entity::new(Point2{x: 0.0, y: -5.0}, Vector2{x: 0.0, y: 0.0}, Vector2{x: std::f32::MAX, y: 10.0})];
+        let mut geometries = Vec::new();
+        for x in (0..480).step_by(16) {
+            geometries.push(Entity::new(Point2{x: x as f32+8.0, y: 8.0}, Vector2{x: 0.0, y: 0.0}, Vector2{x: 16.0, y: 16.0}));
+        }
         World{
-            player: Entity::new(Point2{x: 10.0, y: 10.0}, Vector2{x: 0.0, y: 0.0},  Vector2{x: 8.0, y: 8.0}),
+            player: Entity::new(Point2{x: 32.0, y: 48.0}, Vector2{x: 0.0, y: 0.0},  Vector2{x: 8.0, y: 8.0}),
             left: false,
             right: false,
             up: false,
@@ -39,10 +42,13 @@ impl World {
         self.player.grounded = false;
         for geometry in &self.geometries {
             if self.player.collides(geometry) {
-                self.player.grounded = true;
-                self.player.pos.y = 0.0;
-                if self.player.vel.y < -0.1 {
+                self.player.pos -= self.player.vel;
+                let collides_up = (self.player.pos.y - geometry.pos.y).abs() > (self.player.pos.x - geometry.pos.x).abs();
+                if collides_up {
                     self.player.vel.y = 0.0;
+                    self.player.grounded = true;
+                } else {
+                    self.player.vel.x = 0.0;
                 }
             }
         }
@@ -55,6 +61,9 @@ impl World {
         }
         if self.right {
             self.player.vel.x += IMPULSE_X;
+        }
+        if !self.left && !self.right {
+            self.player.vel.x /= 1.01;
         }
         self.player.pos += self.player.vel;
     }

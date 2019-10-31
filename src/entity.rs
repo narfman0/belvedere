@@ -14,10 +14,10 @@ impl Entity {
 
     #[allow(dead_code)]
     pub fn collides(&mut self, entity: &Entity) -> bool {
-        return self.pos.x < entity.pos.x + entity.size.x/2.0 &&
-            self.pos.x + self.size.x/2.0 > entity.pos.x &&
-            self.pos.y < entity.pos.y + entity.size.y/2.0 &&
-            self.pos.y + self.size.y/2.0 > entity.pos.y;
+        return self.pos.x - self.size.x/2.0 < entity.pos.x + entity.size.x/2.0 &&
+            self.pos.x + self.size.x/2.0 > entity.pos.x - entity.size.y/2.0 &&
+            self.pos.y - self.size.y/2.0 < entity.pos.y + entity.size.y/2.0 &&
+            self.pos.y + self.size.y/2.0 > entity.pos.y - entity.size.y/2.0;
     }
 }
 
