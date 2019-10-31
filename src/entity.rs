@@ -4,11 +4,12 @@ pub struct Entity {
     pub pos: Point2<f32>,
     pub vel: Vector2<f32>,
     pub size: Vector2<f32>,
+    pub grounded: bool,
 }
 
 impl Entity {
     pub fn new(pos: Point2<f32>, vel: Vector2<f32>, size: Vector2<f32>) -> Entity {
-        Entity{pos, vel, size}
+        Entity{pos, vel, size, grounded: false}
     }
 
     #[allow(dead_code)]
