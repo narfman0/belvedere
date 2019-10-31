@@ -16,7 +16,7 @@ pub struct World {
 impl World {
     pub fn new() -> World {
         World{
-            player: Entity::new(Point2::<f32>::new(10.0, 10.0), Vector2::new(0.0, 0.0), 4.0),
+            player: Entity::new(Point2::<f32>::new(10.0, 10.0), Vector2::new(0.0, 0.0),  Vector2::new(8.0, 8.0)),
             left: false,
             right: false,
             up: false,
