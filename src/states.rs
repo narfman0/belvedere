@@ -3,9 +3,7 @@ use ggez;
 use ggez::event::{KeyCode, KeyMods};
 use ggez::{event, graphics, Context, GameResult};
 
-static PLAYER_WIDTH: i32 = 8;
 static TILE_WIDTH: i32 = 16;
-static PLAYER_WIDTH_F: f32 = PLAYER_WIDTH as f32;
 static TILE_WIDTH_F: f32 = TILE_WIDTH as f32;
 
 pub struct LevelState {
@@ -41,8 +39,8 @@ impl event::EventHandler for LevelState {
                 r.h - geometry.pos.y as f32 - TILE_WIDTH_F/2.0);
             graphics::draw(ctx, &self.green_tile, (pos,))?;
         }
-        let player_pos = Point2::new(self.world.player.pos.x - PLAYER_WIDTH_F/2.0,
-            r.h - self.world.player.pos.y - PLAYER_WIDTH_F/2.0);
+        let player_pos = Point2::new(self.world.player.pos.x - TILE_WIDTH_F/2.0,
+            r.h - self.world.player.pos.y - TILE_WIDTH_F/2.0);
         graphics::draw(ctx, &self.player_image, (player_pos,))?;
         graphics::present(ctx)?;
         if (self.frames % 100) == 0 {
