@@ -1,15 +1,23 @@
 use cgmath::{Point2, Vector2};
 
+#[derive(PartialEq)]
+pub enum JumpState {
+    CanJump,
+    Jumping,
+    Cresting,
+    Falling,
+}
+
 pub struct Entity {
     pub pos: Point2<f32>,
     pub vel: Vector2<f32>,
     pub size: Vector2<f32>,
-    pub grounded: bool,
+    pub jump_state: JumpState,
 }
 
 impl Entity {
     pub fn new(pos: Point2<f32>, vel: Vector2<f32>, size: Vector2<f32>) -> Entity {
-        Entity{pos, vel, size, grounded: false}
+        Entity{pos, vel, size, jump_state: JumpState::Falling}
     }
 
     #[allow(dead_code)]

@@ -7,7 +7,6 @@ static TILE_WIDTH: i32 = 16;
 static TILE_WIDTH_F: f32 = TILE_WIDTH as f32;
 
 pub struct LevelState {
-    frames: usize,
     player_image: graphics::Image,
     green_tile: graphics::Image,
     world: crate::world::World,
@@ -18,16 +17,14 @@ impl LevelState {
         let world = crate::world::World::new();
         let player_image = graphics::Image::new(ctx, "/red.png")?;
         let green_tile = graphics::Image::new(ctx, "/greentile.png")?;
-        let s = LevelState { frames: 0, player_image, green_tile, world };
+        let s = LevelState { player_image, green_tile, world };
         Ok(s)
     }
 }
 
 impl event::EventHandler for LevelState {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
-        let fps = ggez::timer::fps(ctx);
-        self.world.update(fps as f32);
-        self.frames += 1;
+        self.world.update(ggez::timer::delta(ctx));
         Ok(())
     }
 
@@ -43,9 +40,6 @@ impl event::EventHandler for LevelState {
             r.h - self.world.player.pos.y - TILE_WIDTH_F/2.0);
         graphics::draw(ctx, &self.player_image, (player_pos,))?;
         graphics::present(ctx)?;
-        if (self.frames % 100) == 0 {
-            println!("FPS: {}", ggez::timer::fps(ctx));
-        }
         Ok(())
     }
 
