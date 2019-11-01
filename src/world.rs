@@ -4,7 +4,7 @@ use std::time::Duration;
 use crate::entity::{Entity, JumpState};
 
 static IMPULSE_X: f32 = 0.1;
-static JUMP_Y: f32 = 8.0;
+static JUMP_Y: f32 = 5.0;
 
 pub struct World {
     pub player: Entity,
@@ -42,7 +42,7 @@ impl World {
                     self.player.jump_state = JumpState::Cresting;
                 }
                 self.jump_duration += delta.as_millis();
-                if self.jump_duration >= 100 {
+                if self.jump_duration >= 500 {
                     self.player.jump_state = JumpState::Cresting;
                     self.jump_duration = 0;
                 }
@@ -55,7 +55,19 @@ impl World {
                 }
             },
             JumpState::Falling => self.player.vel.y = -JUMP_Y,
-            JumpState::CanJump => (),
+            JumpState::CanJump => {
+                // the -8 represents half a tile. since we don't do slant geometry, this should hopefully maybe generally get us by
+                let mut under_player = Entity::new(Point2{x: self.player.pos.x, y: self.player.pos.y-8.0}, self.player.vel,  self.player.size);
+                let mut ground = false;
+                for geometry in &self.geometries {
+                    if under_player.collides(geometry) {
+                        ground = true;
+                    }
+                }
+                if !ground {
+                    self.player.jump_state = JumpState::Falling;
+                }
+            },
         }
         
         for geometry in &self.geometries {
